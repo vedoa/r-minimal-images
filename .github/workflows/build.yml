@@ -2,7 +2,7 @@ name: Build and publish images
 
 on:
   push:
-    branches: [main]
+    branches: [main, release]
   pull_request:
   workflow_dispatch:
 
@@ -41,7 +41,7 @@ jobs:
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: Log in to GHCR
-        if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/release'
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
@@ -73,13 +73,13 @@ jobs:
           file: ${{ matrix.package }}/Dockerfile
           platforms: linux/amd64,linux/arm64
           build-args: R_VERSION=${{ matrix.r_version }}
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.ref == 'refs/heads/release' }}
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=gha,scope=r-${{ matrix.package }}-${{ steps.r-version.outputs.tag }}
           cache-to: type=gha,mode=max,scope=r-${{ matrix.package }}-${{ steps.r-version.outputs.tag }}
 
       - name: Report image sizes
-        if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/release'
         env:
           IMAGE: ghcr.io/${{ github.repository_owner }}/r-${{ matrix.package }}:${{ steps.r-version.outputs.tag }}
         shell: bash
