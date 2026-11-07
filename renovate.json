@@ -1,0 +1,47 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "dependencyDashboard": false,
+  "pinDigests": true,
+  "enabledManagers": ["custom.regex", "github-actions"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/\\.github/workflows/build\\.yml$/",
+        "/Dockerfile$/"
+      ],
+      "matchStrings": [
+        "(?<currentValue>4\\.5\\.\\d+)(?:@(?<currentDigest>sha256:[a-f0-9]+))?"
+      ],
+      "depNameTemplate": "r-minimal-4.5",
+      "packageNameTemplate": "ghcr.io/r-hub/r-minimal/r-minimal",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/\\.github/workflows/build\\.yml$/",
+        "/Dockerfile$/"
+      ],
+      "matchStrings": [
+        "(?<currentValue>4\\.6\\.\\d+)(?:@(?<currentDigest>sha256:[a-f0-9]+))?"
+      ],
+      "depNameTemplate": "r-minimal-4.6",
+      "packageNameTemplate": "ghcr.io/r-hub/r-minimal/r-minimal",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchDepNames": ["r-minimal-4.5"],
+      "allowedVersions": "/^4\\.5\\.\\d+$/"
+    },
+    {
+      "matchDepNames": ["r-minimal-4.6"],
+      "allowedVersions": "/^4\\.6\\.\\d+$/"
+    }
+  ]
+}
